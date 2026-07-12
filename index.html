@@ -1,21 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Anime Clash</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="gameContainer">
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" style="display:none;"></canvas>
     <div id="ui-layer">
       <div id="solo-badge">Solo — vs CPU</div>
+      <button id="menu-back-btn" style="display:none;">← Menü</button>
     </div>
   </div>
+
+  <!-- Persistence (must load before Game.js uses window.SaveData) -->
+  <script src="SaveData.js"></script>
+
+  <!-- Rendering base -->
   <script src="AssetsLib.js"></script>
   <script src="UI.js"></script>
   <script src="assets.js"></script>
+
+  <!-- Core game classes (must load before Game.js) -->
   <script src="GameObject.js"></script>
   <script src="Card.js"></script>
   <script src="Unit.js"></script>
@@ -26,9 +34,26 @@
   <script src="RemotePlayer.js"></script>
   <script src="AI.js"></script>
   <script src="Game.js"></script>
+
+  <!-- Main menu (shown first, starts the Game on "KAMPF") -->
+  <script src="MainMenu.js"></script>
+  <!-- In-battle emote wheel (real emote art, Clash-Royale-style) -->
+  <script src="Emotes.js"></script>
   <script>
-    const game = new Game(document.getElementById('gameCanvas'));
-    window.game = game;
+    const canvas = document.getElementById('gameCanvas');
+    const backBtn = document.getElementById('menu-back-btn');
+    window.emoteWheel = new EmoteWheel();
+
+    function startBattle() {
+      canvas.style.display = 'block';
+      backBtn.style.display = 'block';
+      window.game = new Game(canvas);
+      window.emoteWheel.show();
+    }
+
+    backBtn.onclick = () => location.reload();
+
+    window.mainMenu = new MainMenu(startBattle);
   </script>
 </body>
 </html>
